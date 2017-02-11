@@ -1,0 +1,11 @@
+{
+  "name": "beat-looper",
+  "version": "1.0.0",
+  "description": "Browser based Drum Loop machine ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
