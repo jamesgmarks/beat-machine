@@ -3,24 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <title>Drum Looper</title>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
   
+  <div id="settings">
+    <div>
+      <label>BPM: <input type="number" id="bpm" value="140"></label>
+    </div>
+    <div>
+      <label>Measure: <input type="number" id="measure" value="8"></label>
+    </div>
+    <div>
+      <label>Seconds/Loop: <input type="number" id="seconds" value="4"></label>
+    </div>
+  </div>
   <div id="mixer"></div>
 
   <template id="mixer-template">
-    <div class="controls">
-      <span class="controls-play"></span>
-      <span class="controls-stop"></span>
-      <span class="controls-clear"></span>
-      <span class="controls-save"></span>
-      <span class="controls-load"></span>
+    <div class="controls-container">
+      <span class="controls-play"><i class="fa fa-play"></i></span>
+      <span class="controls-clear"><i class="fa fa-trash"></i></span>
+      <span class="controls-save"><i class="fa fa-save"></i></span>
+      <span class="controls-load"><i class="fa fa-folder-open"></i></span>
     </div>
-    <div class="switchbox">
+    <div class="switch-box">
+      <div class="indicator-row">
+        <div class="indicator-header"></div>
+        <div class="indicator-switch-container">
+          <span class="indicator-switch">&nbsp;</span>
+        </div>
+      </div>
       <div class="sample-row" data-sample="./sounds/CYCdh_SonFlam-01.wav">
         <div class="sample-container">
-          <span class="sample-image">&nbsp;</span>
+          <span class="sample-on">&nbsp;</span>
           <button class="sample-name"></button>
           <audio class="audio-player" src="./sounds/CYCdh_SonFlam-01.wav"></audio>
         </div>
