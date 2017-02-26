@@ -1,6 +1,6 @@
 
 
-let currentIndex = -1;
+let currentBeatIndex = 0;
 let playing = false;
 let beatMeasure = 8;
 let beatsPerLoop = 4;
@@ -17,11 +17,9 @@ function playAudio(audioElement) {
 }
 
 
-// DEBUG: Testing 1,2,3
-// aka. audio 'hello world!'
 const t = document.getElementById('mixer-template');
 if(! ('content' in t)) {
-  alert("This aint gonna work man!");
+  console.error("This aint gonna work man!");
 } else {
 
   // Get elements out of mixer template
@@ -40,17 +38,9 @@ if(! ('content' in t)) {
   const $switchGroup = t.content.querySelector(".switch-group");
   const $switch = t.content.querySelector(".switch");
 
-
-  // const audiothing = document.importNode(audioPlayer, true);
-  // document.getElementById("mixer").appendChild(audiothing);
-
-  // Create rows based on samples in db, etc.
-  // Inject control-box into #mixer
-
-
-  /***********************************\
-  | Functions for drawing switchboard |
-  \***********************************/
+  /*************************************
+   | Functions for drawing switchboard |
+   *************************************/
   // Render a switch <div class="switch" data-on></div>
   const renderSwitch = function() {
     const _switch = document.importNode($switch, true);
@@ -140,11 +130,14 @@ if(! ('content' in t)) {
     { name: 'Sonic Flame 01', source: './sounds/CYCdh_SonFlam-01.wav'},
     { name: 'Sonic Sonar Off 06', source: './sounds/CYCdh_SonSnrOff-06.wav'},
   ];
-  const mixer = document.getElementById("mixer");
-    mixer.appendChild(renderControls());
-    mixer.appendChild(renderIndicatorRow(beatsPerLoop * beatMeasure));
-    mixer.appendChild(renderSwitchBox(samples, beatsPerLoop, beatMeasure));
-
+  function drawMixer() {
+    const mixer = document.getElementById("mixer");
+      mixer.innerHTML = null;
+      mixer.appendChild(renderControls());
+      mixer.appendChild(renderIndicatorRow(beatsPerLoop * beatMeasure));
+      mixer.appendChild(renderSwitchBox(samples, beatsPerLoop, beatMeasure));
+  }
+  drawMixer();
 
   //Event handling
   window.addEventListener('click', function(e) {
@@ -162,14 +155,15 @@ if(! ('content' in t)) {
     } else if(cList.contains("fa-trash")) {
       // get all .switch on page and remove class "on"
       document.querySelectorAll(".switch").forEach((_switch) => _switch.classList.remove("play"));
+    } else if(cList.contains('indicator-switch')) {
+      const indicators = Array.from(document.getElementsByClassName("indicator-switch"));
+      const clickIndex = indicators.indexOf(e.target);
+      currentBeatIndex = clickIndex;
+      renderBeat(clickIndex);
     }
   });
 
-  window.addEventListener('load', function() {
-    // Beat "animation"
-    //resetBeatLoop(getBeatTime());
-    // TODO: use getAnimationFrame();
-    
+  window.addEventListener('load', function() {    
     window.requestAnimationFrame(step);
   });
 
@@ -177,7 +171,6 @@ if(! ('content' in t)) {
     switch(e.target.id) {
       case "bpm":
         bpm = parseInt(e.target.value, 10);
-        //console.log("new bpm is " + bpm);
         break;
       case "measure":
         beatMeasure = parseInt(e.target.value, 10);
@@ -185,29 +178,24 @@ if(! ('content' in t)) {
           beatMeasure = 1;
           e.target.value = 1;
         }
-        //console.log("new measure is " + beatMeasure);
         break;
       case "seconds":
         beatsPerLoop = parseInt(e.target.value, 10);
-        //console.log("new loopcount is " + beatsPerLoop);
         break;
       default:
         console.error("Unknown setting textbox.");
     }
+    drawMixer();
   }
 
   document.querySelectorAll("#bpm, #measure, #seconds").forEach((element) => element.addEventListener('change', changeSettingTextbox));
 
   let next = null;
-  function step(timestamp) { // timestamp in millis!!!
-    //console.log("step");
+  function step(timestamp) { // timestamp in millis
     if (!next) { 
-      //console.log("setting timestamp");
       next = timestamp + (getBeatTime(beatMeasure));
-      //console.log("Next: " + next, "Beat time: " + getBeatTime());
     }
     if(next < timestamp) {
-      //console.log("Doing next");
       if(playing) {
         doNextBeat();
       }
@@ -222,7 +210,7 @@ if(! ('content' in t)) {
     }
     beatLoop = setInterval(() => {
       if(playing) {
-        var nextBeatIndex = doNextBeat();
+        doNextBeat();
       }
     }, speed);
   }
@@ -237,17 +225,14 @@ if(! ('content' in t)) {
 
   function doNextBeat() {
 
-    // increment or rotate the beat indexer
-    currentIndex += 1;
-    if(currentIndex === getTotalBeats()) {
-      currentIndex = 0;
-    }
+    renderBeat(currentBeatIndex);
+    playBeatsIfSelected(currentBeatIndex);
 
-    renderBeat(currentIndex);
-    playBeatsIfSelected(currentIndex);
-    
-    // not sure if this is even necessary anymore.
-    return currentIndex;
+    // increment or rotate the beat indexer
+    currentBeatIndex += 1;
+    if(currentBeatIndex === getTotalBeats()) {
+      currentBeatIndex = 0;
+    }
 
   }
 
