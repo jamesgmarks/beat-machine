@@ -120,7 +120,7 @@ if(! ('content' in t)) {
   }
 
 
-  const samples = [
+  var samples = [
     { name: 'Acoustic Snare', source: './sounds/Acoustic Snare-01.wav'},
     { name: 'Electric Clap 2', source: './sounds/CYCdh_ElecK05-Clap02.wav'},
     { name: 'Electric Kick 2', source: './sounds/CYCdh_ElecK05-Kick02.wav'},
@@ -130,12 +130,22 @@ if(! ('content' in t)) {
     { name: 'Sonic Flame 01', source: './sounds/CYCdh_SonFlam-01.wav'},
     { name: 'Sonic Sonar Off 06', source: './sounds/CYCdh_SonSnrOff-06.wav'},
   ];
+
+  var loopState = {};
+
   function drawMixer() {
     const mixer = document.getElementById("mixer");
       mixer.innerHTML = null;
       mixer.appendChild(renderControls());
       mixer.appendChild(renderIndicatorRow(beatsPerLoop * beatMeasure));
       mixer.appendChild(renderSwitchBox(samples, beatsPerLoop, beatMeasure));
+      // pre-fill any loopState for samples that do not yet exist (there) with an empty array.
+      samples.forEach((sample) => {
+        if(!loopState[sample.name]) {
+          loopState[sample.name] = [];
+        }
+      });
+      
   }
   drawMixer();
 
@@ -155,6 +165,8 @@ if(! ('content' in t)) {
     } else if(cList.contains("fa-trash")) {
       // get all .switch on page and remove class "on"
       document.querySelectorAll(".switch").forEach((_switch) => _switch.classList.remove("play"));
+    } else if(cList.contains("fa-save")) {
+    } else if(cList.contains("fa-folder-open")) {
     } else if(cList.contains('indicator-switch')) {
       const indicators = Array.from(document.getElementsByClassName("indicator-switch"));
       const clickIndex = indicators.indexOf(e.target);

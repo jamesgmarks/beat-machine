@@ -20,6 +20,12 @@
     </div>
   </div>
   <div id="mixer"></div>
+  <form id='add-sample-form' class='hidden'>
+    <h4> Add Sample </h4>
+    <div><label>Name: <input type="text" id='add-sample-name'></label></div>
+    <div><label>File: <input type="file" id='add-sample-file'></label></div>
+    <div><button type="submit">Add Sample</button></div>
+  </form>
 
   <template id="mixer-template">
     <div class="controls-container">
@@ -50,5 +56,6 @@
     </div>
   </template>
   <script src="index.js"></script>
+  <script src="file.js"></script>
 </body>
 </html>

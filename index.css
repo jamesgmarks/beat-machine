@@ -107,3 +107,7 @@
 .switch.play {
   background-color: #886633;
 }
+
+.hidden {
+  display: none;
+}
